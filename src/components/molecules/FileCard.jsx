@@ -41,10 +41,9 @@ const FileCard = ({ file, onDelete, onPreview }) => {
     }
   };
 
-  const isImage = file.type.startsWith("image/");
-  const isUploading = file.uploadStatus === "uploading";
-  const isCompleted = file.uploadStatus === "completed";
-
+const isImage = file.type_c?.startsWith("image/");
+  const isUploading = file.upload_status_c === "uploading";
+  const isCompleted = file.upload_status_c === "completed";
   return (
     <div className={cn(
       "card p-6 relative",
@@ -52,35 +51,35 @@ const FileCard = ({ file, onDelete, onPreview }) => {
     )}>
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-4 flex-1 min-w-0">
-          {isImage && file.thumbnailUrl ? (
+{isImage && file.thumbnail_url_c ? (
             <div 
               className="w-12 h-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0 cursor-pointer hover:scale-105 transition-transform duration-200"
               onClick={() => onPreview && onPreview(file)}
             >
               <img 
-                src={file.thumbnailUrl} 
-                alt={file.name}
+                src={file.thumbnail_url_c} 
+                alt={file.name_c}
                 className="w-full h-full object-cover"
               />
             </div>
           ) : (
-            <div className="w-12 h-12 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center flex-shrink-0">
-              <FileIcon fileType={file.type} size={24} className="text-slate-600" />
+<div className="w-12 h-12 bg-gradient-to-br from-slate-100 to-slate-200 rounded-lg flex items-center justify-center flex-shrink-0">
+              <FileIcon fileType={file.type_c} size={24} className="text-slate-600" />
             </div>
           )}
 
           <div className="min-w-0 flex-1">
-            <h4 className="font-semibold text-slate-900 truncate mb-1">{file.name}</h4>
+<h4 className="font-semibold text-slate-900 truncate mb-1">{file.name_c}</h4>
             <div className="flex items-center gap-4 text-sm text-slate-600">
-              <span>{formatFileSize(file.size)}</span>
-              <span>{formatDistanceToNow(new Date(file.timestamp), { addSuffix: true })}</span>
+<span>{formatFileSize(file.size_c)}</span>
+              <span>{formatDistanceToNow(new Date(file.timestamp_c || file.CreatedOn), { addSuffix: true })}</span>
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-2 flex-shrink-0">
-          <div className={cn("flex items-center gap-1", getStatusColor(file.uploadStatus))}>
-            <ApperIcon 
+<div className={cn("flex items-center gap-1", getStatusColor(file.upload_status_c))}>
+            <ApperIcon
               name={getStatusIcon(file.uploadStatus)} 
               size={16} 
               className={cn(isUploading && "animate-spin")}
@@ -100,9 +99,9 @@ const FileCard = ({ file, onDelete, onPreview }) => {
         </div>
       </div>
 
-      {isUploading && (
+{isUploading && (
         <ProgressBar 
-          progress={file.uploadProgress} 
+          progress={file.upload_progress_c} 
           animated={true}
           className="mb-2"
         />

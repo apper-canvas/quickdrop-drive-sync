@@ -64,7 +64,7 @@ const FileUploader = ({ files, setFiles, loading }) => {
         setUploadingFiles(current => current.filter(f => f.Id !== uploadedFile.Id));
         setFiles(current => [...current, uploadedFile]);
         
-        toast.success(`${uploadedFile.name} uploaded successfully!`);
+toast.success(`${uploadedFile.name_c} uploaded successfully!`);
         return uploadedFile;
       } catch (error) {
         toast.error(`Failed to upload ${file.name}`);
@@ -86,7 +86,7 @@ const FileUploader = ({ files, setFiles, loading }) => {
     try {
       await fileService.delete(deleteFile.Id);
       setFiles(current => current.filter(f => f.Id !== deleteFile.Id));
-      toast.success(`${deleteFile.name} deleted successfully`);
+toast.success(`${deleteFile.name_c} deleted successfully`);
     } catch (error) {
       toast.error("Failed to delete file");
     } finally {
@@ -96,7 +96,7 @@ const FileUploader = ({ files, setFiles, loading }) => {
   };
 
   const handlePreview = (file) => {
-    if (file.type.startsWith("image/")) {
+if (file.type_c?.startsWith("image/")) {
       setPreviewFile(file);
     }
   };

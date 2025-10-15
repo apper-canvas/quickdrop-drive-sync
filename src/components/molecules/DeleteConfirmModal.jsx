@@ -39,7 +39,7 @@ const DeleteConfirmModal = ({ file, isOpen, onClose, onConfirm, isDeleting }) =>
             </div>
 
             <p className="text-slate-700 mb-6">
-              Are you sure you want to delete <strong>{file.name}</strong>?
+Are you sure you want to delete <strong>{file.name_c}</strong>?
             </p>
 
             <div className="flex gap-3 justify-end">

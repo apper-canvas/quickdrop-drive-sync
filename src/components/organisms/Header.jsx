@@ -1,7 +1,20 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
 
 const Header = () => {
+  const { isAuthenticated, user } = useSelector((state) => state.user);
+  const handleLogout = async () => {
+    try {
+      if (window.ApperSDK?.ApperUI) {
+        await window.ApperSDK.ApperUI.logout();
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <header className="bg-white border-b border-slate-200 shadow-sm">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -16,9 +29,22 @@ const Header = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 text-sm text-slate-600">
-            <ApperIcon name="Shield" size={16} className="text-primary-500" />
-            <span>Secure & Fast</span>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 text-sm text-slate-600">
+              <ApperIcon name="Shield" size={16} className="text-primary-500" />
+              <span>Secure & Fast</span>
+            </div>
+            {isAuthenticated && user && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleLogout}
+                className="flex items-center gap-2"
+              >
+                <ApperIcon name="LogOut" size={16} />
+                <span>Logout</span>
+              </Button>
+            )}
           </div>
         </div>
       </div>
