@@ -1,11 +1,11 @@
 {
-  "/": {
+"/": {
     "allow": {
       "when": {
         "conditions": [
           {
-            "label": "Homepage is accessible to authenticated users",
-            "rule": "authenticated"
+            "label": "Homepage is publicly accessible",
+            "rule": "public"
           }
         ]
       },

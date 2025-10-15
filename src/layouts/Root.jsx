@@ -28,117 +28,28 @@ const LoadingSpinner = () => (
 );
 
 export default function Root() {
-  const { isInitialized, user } = useSelector(state => state.user);
-  const location = useLocation();
-  const navigate = useNavigate();
+const { isInitialized } = useSelector(state => state.user);
   const dispatch = useDispatch();
 
-  const [authInitialized, setAuthInitialized] = useState(false);
-
-  useEffect(() => {
-    initializeAuth();
-  }, []);
-
-  useEffect(() => {
-    if (!isInitialized) return;
-
-    const config = getRouteConfig(location.pathname);
-    const { allowed, redirectTo, excludeRedirectQuery } = verifyRouteAccess(config, user);
-
-    if (allowed || !redirectTo) return;
-
-    let redirectUrl = redirectTo;
-    if (!excludeRedirectQuery) {
-      const redirectPath = location.pathname + location.search;
-      const separator = redirectTo.includes('?') ? '&' : '?';
-      redirectUrl = `${redirectTo}${separator}redirect=${encodeURIComponent(redirectPath)}`;
-    }
-
-    navigate(redirectUrl, { replace: true });
-  }, [isInitialized, user, location.pathname, location.search, navigate]);
-
-  const initializeAuth = async () => {
-    try {
-      const apperClient = await getApperClient();
-
-      if (!apperClient || !window.ApperSDK) {
-        console.error('Failed to initialize ApperSDK or ApperClient');
-        dispatch(clearUser());
-        handleAuthComplete();
-        return;
-      }
-
-      const { ApperUI } = window.ApperSDK;
-
-      ApperUI.setup(apperClient, {
-        target: "#authentication",
-        clientId: import.meta.env.VITE_APPER_PROJECT_ID,
-        view: "both",
-        onSuccess: handleAuthSuccess,
-        onError: handleAuthError,
-      });
-
-    } catch (error) {
-      console.error('Failed to initialize authentication:', error);
-      dispatch(clearUser());
-      handleAuthComplete();
-    }
-  };
-
-  const handleAuthSuccess = (user) => {
-    if (user) {
-      dispatch(setUser(user));
-      handleNavigation();
-    } else {
-      dispatch(clearUser());
-    }
-    handleAuthComplete();
-  };
-
-  const handleAuthError = (error) => {
-    console.error("Auth error:", error);
-    dispatch(clearUser());
-    handleAuthComplete();
-  };
-
-  const handleAuthComplete = () => {
-    setAuthInitialized(true);
+useEffect(() => {
+    // Initialize app immediately without authentication
     dispatch(setInitialized(true));
-  };
+  }, [dispatch]);
 
-  const handleNavigation = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const redirectPath = urlParams.get("redirect");
-
-    if (redirectPath) {
-      navigate(redirectPath);
-    } else {
-      const authPages = ["/login", "/signup", "/callback"];
-      const isOnAuthPage = authPages.some(page =>
-        window.location.pathname.includes(page)
-      );
-      if (isOnAuthPage) {
-        navigate("/");
-      }
-    }
-  };
-
+// Logout function kept for potential future use
   const logout = async () => {
     try {
       await window.ApperSDK?.ApperUI?.logout();
       dispatch(clearUser());
-      navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error);
     }
   };
 
-  if (!authInitialized) {
-    return <LoadingSpinner />;
-  }
+// Render immediately without authentication checks
 
-  return (
-    <AuthContext.Provider value={{ logout, isInitialized: authInitialized }}>
+return (
+    <AuthContext.Provider value={{ logout, isInitialized }}>
       <Outlet />
     </AuthContext.Provider>
   );
